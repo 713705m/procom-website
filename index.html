@@ -626,7 +626,7 @@
       <!-- team & supervisors -->
       <div class="hero-meta">
         <div class="hero-meta-block">
-          <h4>Équipe (avec rotation temporaires des rôles)</h4>
+          <h4>Équipe (avec rotations temporaires des rôles)</h4>
           <ul>
             <li><strong>Marianne Ninet</strong> - Communication & Algorithm Lead</li>
             <li><strong>Xinda Guo</strong> - Hardware Lead (Carte)</li>
@@ -673,29 +673,44 @@
         <div class="tl-desc">Setup environnement, étude des algorithmes PQC, installation Gem5</div>
       </div>
       <div class="tl-item done">
-        <div class="tl-date">6 Novembre 2025</div>
+        <div class="tl-date">Octobre 2025</div>
+        <div class="tl-title">CPA sur AES-128 validée <span class="tl-badge done">✓ Fait</span></div>
+        <div class="tl-desc">Clé 128 bits récupérée avec 200 traces via ChipWhisperer CW305 / PULPino</div>
+      </div>
+      <div class="tl-item done">
+        <div class="tl-date">Novembre 2025</div>
         <div class="tl-title">Choix de l'algorithme - HQC <span class="tl-badge done">✓ Fait</span></div>
         <div class="tl-desc">Analyse comparative des 5 candidats NIST, sélection HQC pour ses opérations binaires</div>
       </div>
       <div class="tl-item done">
-        <div class="tl-date">20 Novembre 2025</div>
+        <div class="tl-date">Novembre-Décembre 2025</div>
         <div class="tl-title">HQC sur Gem5 + Profiling <span class="tl-badge done">✓ Fait</span></div>
         <div class="tl-desc">Profiling HQC-128 sur RV32IMC - Karatsuba identifié à 84% du temps d'exécution</div>
       </div>
-      <div class="tl-item done">
-        <div class="tl-date">6 Janvier 2026</div>
-        <div class="tl-title">CPA sur AES-128 validée <span class="tl-badge done">✓ Fait</span></div>
-        <div class="tl-desc">Clé 128 bits récupérée avec 200 traces via ChipWhisperer CW305 / PULPino</div>
-      </div>
       <div class="tl-item wip">
-        <div class="tl-date">Février 2026</div>
-        <div class="tl-title">Instruction custom CLMUL <span class="tl-badge wip">En cours</span></div>
-        <div class="tl-desc">RTL SystemVerilog intégré dans PULPino - +33% en simulation, tests hardware en cours</div>
+        <div class="tl-date">Janvier 2026</div>
+        <div class="tl-title">Instruction custom CLMUL <span class="tl-badge done">✓ Fait</span></div>
+        <div class="tl-desc">RTL SystemVerilog intégré dans PULPino : +33% en simulation, tests hardware en cours</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-date">Fevrier-Mars 2026</div>
+        <div class="tl-title">Problème de RAM <span class="tl-badge done">✓ Fait</span></div>
+        <div class="tl-desc">Debuggage du problème de RAM sur PULPino, tests VHDL.</div>
+      </div>    
+      <div class="tl-item">
+        <div class="tl-date">Fevrier-Mars 2026</div>
+        <div class="tl-title">Retour sur l'algorithme AES <span class="tl-badge done">✓ Fait</span></div>
+        <div class="tl-desc">Optimisation des opérations AES sur PULPino</div>
       </div>
       <div class="tl-item">
         <div class="tl-date">Mars 2026</div>
-        <div class="tl-title">Attaque DPA sur HQC + Contre-mesures <span class="tl-badge todo">À faire</span></div>
-        <div class="tl-desc">Extension de l'attaque CPA à HQC, évaluation masquage et constant-time</div>
+        <div class="tl-title">Ecriture des livrables <span class="tl-badge done">✓ Fait</span></div>
+        <div class="tl-desc">Rédaction du rapport final & du poster.</div>
+      </div> 
+      <div class="tl-item">
+        <div class="tl-date">20 Mars 2026</div>
+        <div class="tl-title">Présentation finale<span class="tl-badge todo"></span>En cours</div>
+        <div class="tl-desc">Fin de projet.</div>
       </div>
     </div>
   </div>
@@ -751,7 +766,7 @@
 
     <div class="content-block">
       <h3>Schéma KEM - Fonctionnement de HQC</h3>
-     <img src="hqc_schema.png" alt="Schéma HQC Algo" style="width:100%; border-radius:6px; margin:16px 0;" />
+     <img src="hqc_schema.png" alt="Schéma HQC Algo" style="width:30%; border-radius:6px; margin:16px 0;" />
       <p>HQC est un Key Encapsulation Mechanism (KEM). Le déchiffrement opère dans l'anneau <code>R = F₂[X]/(Xⁿ-1)</code>. L'opération critique est la multiplication polynomiale <code>w = v ⊕ (u · y)</code> où <strong>y</strong> est la clé privée (sparse, 66 bits à 1 sur 17 669).</p>
     </div>
 

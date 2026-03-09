@@ -763,11 +763,7 @@
       </div>
     </div>
 
-    <div class="content-block">
-      <h3>Schéma KEM - Fonctionnement de HQC</h3>
-     <img src="hqc_schema.png" alt="Schéma HQC Algo" style="width:30%; border-radius:6px; margin:16px 0;" />
-      <p>HQC est un Key Encapsulation Mechanism (KEM). Le déchiffrement opère dans l'anneau <code>R = F₂[X]/(Xⁿ-1)</code>. L'opération critique est la multiplication polynomiale <code>w = v ⊕ (u · y)</code> où <strong>y</strong> est la clé privée (sparse, 66 bits à 1 sur 17 669).</p>
-    </div>
+    
 
     <div class="content-block">
       <h3>Paramètres HQC-128 / 192 / 256</h3>
@@ -874,17 +870,15 @@
     <div class="content-block">
       <h3>Qu'est-ce qu'un KEM ?</h3>
       <p>Un Key Encapsulation Mechanism (KEM) est un protocole cryptographique permettant à deux parties d'établir un secret partagé sur un canal non sécurisé. HQC est candidat NIST en remplacement de RSA/DH pour les échanges de clés résistants aux attaques quantiques.</p>
-      <div class="img-placeholder short">
-        <span class="ph-icon">!</span>
-        <span class="ph-label">[ IMAGE - Schéma KEM générique : Alice / Bob / canal public ]</span>
-      </div>
     </div>
 
     <div class="content-block">
-      <h3>Structure mathématique</h3>
+      <h3>Schéma KEM - Fonctionnement de HQC</h3>
+     <img src="hqc_schema.png" alt="Schéma HQC Algo" style="width:30%; border-radius:6px; margin:16px 0;" />
+      <p>HQC est un Key Encapsulation Mechanism (KEM). </p>
       <p>HQC opère dans l'anneau polynomial <code>R = F₂[X]/(Xⁿ-1)</code> :</p>
       <div class="formula-box">Addition = XOR &nbsp;|&nbsp; Multiplication = rotation circulaire</div>
-      <p>La clé privée <strong>y</strong> est un vecteur de n=17 669 bits avec seulement <strong>66 bits à 1</strong> (très sparse). Cette sparsité est à la fois une force (efficacité) et une faiblesse (fuite d'information via la consommation).</p>
+      <p>La clé privée <strong>y</strong> est un vecteur de n=17 669 bits avec seulement <strong>66 bits à 1</strong>. Cette sparsité est à la fois une force (efficacité) et une faiblesse (fuite d'information via la consommation).</p>
     </div>
 
     <div class="content-block">
@@ -894,7 +888,7 @@
 
     <div class="content-block">
       <h3>Opération critique - Multiplication polynomiale</h3>
-      <p>Le goulot de sécurité est la multiplication <code>w = v ⊕ (u · y)</code> lors du Decap. C'est là que la clé privée <strong>y</strong> interagit avec le ciphertext <strong>u</strong>, créant une fuite de puissance exploitable.</p>
+      <p>Le goulot de sécurité est la multiplication <code>w = v ⊕ (u · y)</code> lors de la décapsulation. C'est là que la clé privée <strong>y</strong> interagit avec le ciphertext <strong>u</strong>, créant une fuite de puissance exploitable.</p>
       <div class="info-card">
         <h4>Technique d'attaque - Toeplitz / Ciphertexts choisis</h4>
         <p>En choisissant des ciphertexts u avec un seul bit à 1, on isole chaque coefficient de y un par un. 10 à 45 traces suffisent pour récupérer la clé complète (Huang et al., 2022).</p>

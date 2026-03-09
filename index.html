@@ -1,0 +1,1191 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Secure RISC-V — PROCOM 2025/2026</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,600;0,700;1,300&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --blue:       #0077A8;
+      --blue-dark:  #00506E;
+      --blue-light: #E6F4FA;
+      --green:      #5A9E3A;
+      --green-dark: #3D6D27;
+      --green-light:#EBF5E4;
+      --accent:     #00B5D8;
+      --white:      #FFFFFF;
+      --off-white:  #F5F7F8;
+      --gray-100:   #EAEEF0;
+      --gray-300:   #C2CDD2;
+      --gray-500:   #7A8F97;
+      --gray-700:   #3D5059;
+      --gray-900:   #1A2B32;
+      --font-body:  'IBM Plex Sans', sans-serif;
+      --font-mono:  'IBM Plex Mono', monospace;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--off-white);
+      color: var(--gray-900);
+      font-size: 15px;
+      line-height: 1.65;
+    }
+
+    /* ─── NAV ─────────────────────────────────────────────── */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--blue-dark);
+      display: flex;
+      align-items: center;
+      gap: 0;
+      border-bottom: 3px solid var(--green);
+    }
+
+    .nav-brand {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--white);
+      padding: 0 24px;
+      white-space: nowrap;
+      border-right: 1px solid rgba(255,255,255,0.12);
+      height: 54px;
+      display: flex;
+      align-items: center;
+      letter-spacing: 0.04em;
+    }
+
+    .nav-brand span { color: var(--accent); }
+
+    .nav-tabs {
+      display: flex;
+      list-style: none;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .nav-tabs::-webkit-scrollbar { display: none; }
+
+    .nav-tabs li a {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0 20px;
+      height: 54px;
+      color: rgba(255,255,255,0.65);
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+      border-bottom: 3px solid transparent;
+      margin-bottom: -3px;
+      transition: color 0.2s, border-color 0.2s, background 0.2s;
+      white-space: nowrap;
+    }
+    .nav-tabs li a:hover { color: var(--white); background: rgba(255,255,255,0.05); }
+    .nav-tabs li a.active { color: var(--white); border-bottom-color: var(--accent); }
+
+    .nav-tabs li a .tab-num {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--accent);
+      opacity: 0.8;
+    }
+
+    /* ─── PAGES ───────────────────────────────────────────── */
+    .page { display: none; }
+    .page.active { display: block; }
+
+    /* ─── HOME ────────────────────────────────────────────── */
+    .hero {
+      background: linear-gradient(135deg, var(--blue-dark) 0%, var(--blue) 60%, #005e8a 100%);
+      color: var(--white);
+      padding: 72px 48px 56px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(255,255,255,0.03) 40px),
+        repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(255,255,255,0.03) 40px);
+    }
+
+    .hero-inner { position: relative; max-width: 900px; margin: 0 auto; }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.25);
+      border-radius: 4px;
+      padding: 5px 14px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 28px;
+    }
+    .badge::before {
+      content: '';
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--green);
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%,100% { opacity:1; } 50% { opacity:0.4; }
+    }
+
+    .hero h1 {
+      font-size: clamp(26px, 4vw, 40px);
+      font-weight: 700;
+      line-height: 1.2;
+      margin-bottom: 12px;
+    }
+    .hero h1 em {
+      font-style: normal;
+      color: var(--accent);
+    }
+
+    .hero-sub {
+      font-size: 16px;
+      color: rgba(255,255,255,0.7);
+      margin-bottom: 40px;
+      font-weight: 300;
+    }
+
+    /* 3 icon cards */
+    .hero-cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 48px;
+    }
+    .hero-card {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 8px;
+      padding: 24px 20px;
+      cursor: pointer;
+      transition: background 0.2s, border-color 0.2s, transform 0.15s;
+      text-align: center;
+    }
+    .hero-card:hover {
+      background: rgba(255,255,255,0.14);
+      border-color: var(--accent);
+      transform: translateY(-2px);
+    }
+    .hero-card-icon {
+      font-size: 32px;
+      margin-bottom: 12px;
+      display: block;
+    }
+    .hero-card h3 {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 6px;
+      color: var(--white);
+    }
+    .hero-card p {
+      font-size: 12px;
+      color: rgba(255,255,255,0.55);
+      line-height: 1.5;
+    }
+
+    /* team & supervisors */
+    .hero-meta {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      border-top: 1px solid rgba(255,255,255,0.12);
+      padding-top: 32px;
+    }
+    .hero-meta-block h4 {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 10px;
+    }
+    .hero-meta-block ul { list-style: none; }
+    .hero-meta-block ul li {
+      font-size: 13px;
+      color: rgba(255,255,255,0.8);
+      padding: 3px 0;
+    }
+    .hero-meta-block ul li strong { color: var(--white); }
+
+    /* ─── STATS BAR ───────────────────────────────────────── */
+    .stats-bar {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      background: var(--white);
+      border-bottom: 1px solid var(--gray-100);
+    }
+    .stat-item {
+      padding: 28px 24px;
+      text-align: center;
+      border-right: 1px solid var(--gray-100);
+    }
+    .stat-item:last-child { border-right: none; }
+    .stat-num {
+      font-family: var(--font-mono);
+      font-size: 36px;
+      font-weight: 600;
+      color: var(--blue);
+      display: block;
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+    .stat-label {
+      font-size: 12px;
+      color: var(--gray-500);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    /* ─── TIMELINE ────────────────────────────────────────── */
+    .timeline-section {
+      max-width: 900px;
+      margin: 56px auto;
+      padding: 0 32px;
+    }
+    .section-title {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--blue);
+      margin-bottom: 32px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .section-title::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--gray-100);
+    }
+
+    .timeline {
+      position: relative;
+      padding-left: 32px;
+    }
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 8px;
+      top: 8px;
+      bottom: 0;
+      width: 2px;
+      background: linear-gradient(to bottom, var(--blue), var(--green));
+    }
+    .tl-item {
+      position: relative;
+      margin-bottom: 28px;
+    }
+    .tl-item::before {
+      content: '';
+      position: absolute;
+      left: -28px;
+      top: 6px;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      border: 2px solid var(--white);
+      box-shadow: 0 0 0 2px var(--blue);
+      background: var(--white);
+    }
+    .tl-item.done::before { background: var(--green); box-shadow: 0 0 0 2px var(--green); }
+    .tl-item.wip::before  { background: var(--blue);  box-shadow: 0 0 0 2px var(--blue); }
+
+    .tl-date {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--gray-500);
+      margin-bottom: 2px;
+    }
+    .tl-title {
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--gray-900);
+    }
+    .tl-desc {
+      font-size: 13px;
+      color: var(--gray-500);
+      margin-top: 2px;
+    }
+    .tl-badge {
+      display: inline-block;
+      font-size: 10px;
+      padding: 1px 8px;
+      border-radius: 2px;
+      font-weight: 600;
+      margin-left: 8px;
+      vertical-align: middle;
+    }
+    .tl-badge.done { background: var(--green-light); color: var(--green-dark); }
+    .tl-badge.wip  { background: var(--blue-light);  color: var(--blue-dark); }
+    .tl-badge.todo { background: var(--gray-100);     color: var(--gray-500); }
+
+    /* ─── GENERIC PAGE LAYOUT ─────────────────────────────── */
+    .page-content {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 48px 32px 80px;
+    }
+
+    .page-header {
+      border-bottom: 2px solid var(--gray-100);
+      padding-bottom: 24px;
+      margin-bottom: 40px;
+    }
+    .page-header .page-num {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    .page-header h2 {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--gray-900);
+      line-height: 1.2;
+    }
+    .page-header p {
+      margin-top: 10px;
+      color: var(--gray-500);
+      font-size: 15px;
+      font-weight: 300;
+    }
+
+    /* content blocks */
+    .content-block {
+      margin-bottom: 40px;
+    }
+    .content-block h3 {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--blue-dark);
+      margin-bottom: 12px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid var(--gray-100);
+    }
+    .content-block p {
+      color: var(--gray-700);
+      margin-bottom: 10px;
+    }
+
+    /* image placeholder */
+    .img-placeholder {
+      width: 100%;
+      background: var(--gray-100);
+      border: 2px dashed var(--gray-300);
+      border-radius: 6px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 40px;
+      margin: 16px 0;
+      color: var(--gray-500);
+      font-size: 13px;
+      text-align: center;
+    }
+    .img-placeholder .ph-icon { font-size: 36px; opacity: 0.4; }
+    .img-placeholder .ph-label { font-family: var(--font-mono); font-size: 12px; }
+    .img-placeholder.tall { min-height: 280px; }
+    .img-placeholder.short { min-height: 160px; }
+
+    /* two-col grid */
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+    .three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+
+    /* table */
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      margin: 16px 0;
+    }
+    .data-table th {
+      background: var(--blue-dark);
+      color: var(--white);
+      text-align: left;
+      padding: 10px 14px;
+      font-weight: 600;
+      font-size: 12px;
+      letter-spacing: 0.03em;
+    }
+    .data-table td {
+      padding: 9px 14px;
+      border-bottom: 1px solid var(--gray-100);
+      color: var(--gray-700);
+    }
+    .data-table tr:nth-child(even) td { background: var(--off-white); }
+    .data-table tr.highlight td {
+      background: var(--blue-light);
+      color: var(--blue-dark);
+      font-weight: 600;
+    }
+    .data-table tr.highlight-green td {
+      background: var(--green-light);
+      color: var(--green-dark);
+      font-weight: 600;
+    }
+    .data-table td.mono { font-family: var(--font-mono); font-size: 12px; }
+
+    /* info card */
+    .info-card {
+      background: var(--white);
+      border: 1px solid var(--gray-100);
+      border-left: 4px solid var(--blue);
+      border-radius: 6px;
+      padding: 20px 24px;
+      margin: 16px 0;
+    }
+    .info-card.green { border-left-color: var(--green); }
+    .info-card h4 { font-size: 13px; font-weight: 700; color: var(--blue-dark); margin-bottom: 6px; }
+    .info-card.green h4 { color: var(--green-dark); }
+    .info-card p { font-size: 13px; color: var(--gray-700); margin: 0; }
+
+    /* result callout */
+    .result-callout {
+      background: linear-gradient(135deg, var(--green-light), #dff0d4);
+      border: 1px solid var(--green);
+      border-radius: 8px;
+      padding: 24px 28px;
+      margin: 24px 0;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+    .result-callout .result-num {
+      font-family: var(--font-mono);
+      font-size: 40px;
+      font-weight: 600;
+      color: var(--green-dark);
+      white-space: nowrap;
+    }
+    .result-callout p { color: var(--green-dark); font-size: 14px; margin: 0; }
+    .result-callout strong { font-weight: 700; }
+
+    /* inline code */
+    code {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      background: var(--gray-100);
+      padding: 2px 7px;
+      border-radius: 3px;
+      color: var(--blue-dark);
+    }
+
+    /* formula box */
+    .formula-box {
+      background: var(--gray-900);
+      color: var(--accent);
+      font-family: var(--font-mono);
+      font-size: 15px;
+      padding: 20px 28px;
+      border-radius: 6px;
+      margin: 16px 0;
+      text-align: center;
+      letter-spacing: 0.04em;
+    }
+
+    /* ─── FOOTER ──────────────────────────────────────────── */
+    footer {
+      background: var(--gray-900);
+      color: rgba(255,255,255,0.55);
+      padding: 40px 48px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 32px;
+      align-items: flex-start;
+      justify-content: space-between;
+      font-size: 13px;
+    }
+    .footer-block h5 {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 12px;
+    }
+    .footer-block ul { list-style: none; }
+    .footer-block ul li { margin-bottom: 6px; color: rgba(255,255,255,0.55); }
+
+    .footer-pdf-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 6px;
+      padding: 14px 20px;
+      color: var(--white);
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 600;
+      transition: background 0.2s, border-color 0.2s;
+      margin-top: 4px;
+    }
+    .footer-pdf-link:hover {
+      background: rgba(255,255,255,0.12);
+      border-color: var(--accent);
+    }
+    .footer-pdf-link .pdf-icon { font-size: 22px; }
+    .footer-pdf-link .pdf-meta { display: flex; flex-direction: column; }
+    .footer-pdf-link .pdf-meta span { font-size: 11px; font-weight: 400; color: rgba(255,255,255,0.45); }
+
+    .footer-copy {
+      width: 100%;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      padding-top: 20px;
+      font-size: 12px;
+      color: rgba(255,255,255,0.3);
+    }
+
+    /* ─── RESPONSIVE ──────────────────────────────────────── */
+    @media (max-width: 700px) {
+      .hero { padding: 40px 24px 36px; }
+      .hero-cards { grid-template-columns: 1fr; }
+      .hero-meta { grid-template-columns: 1fr; }
+      .stats-bar { grid-template-columns: 1fr; }
+      .stat-item { border-right: none; border-bottom: 1px solid var(--gray-100); }
+      .two-col, .three-col { grid-template-columns: 1fr; }
+      .page-content { padding: 32px 20px 60px; }
+      footer { padding: 32px 24px; }
+      .result-callout { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════ NAV -->
+<nav>
+  <div class="nav-brand">Secure <span>RISC-V</span></div>
+  <ul class="nav-tabs">
+    <li><a href="#" class="active" data-page="home"><span class="tab-num">00</span> Accueil</a></li>
+    <li><a href="#" data-page="algo"><span class="tab-num">01</span> Sélection Algo</a></li>
+    <li><a href="#" data-page="cpa"><span class="tab-num">02</span> Attaque CPA AES</a></li>
+    <li><a href="#" data-page="hqc"><span class="tab-num">03</span> Algorithme HQC</a></li>
+    <li><a href="#" data-page="optim"><span class="tab-num">04</span> Optimisation CLMUL</a></li>
+    <li><a href="#" data-page="gem5"><span class="tab-num">05</span> Logiciel Gem5</a></li>
+  </ul>
+</nav>
+
+<!-- ═══════════════════════════════════════════════ HOME -->
+<div class="page active" id="home">
+
+  <div class="hero">
+    <div class="hero-inner">
+      <div class="badge">PROCOM 2025/2026 — IMT Atlantique &nbsp;·&nbsp; LPSS</div>
+      <h1>Secure <em>RISC-V</em> Processor<br>for Post-Quantum Cryptography</h1>
+      <p class="hero-sub">Conception d'un cœur monocœur sécurisé et basse consommation optimisé pour HQC</p>
+
+      <!-- 3 icon cards -->
+      <div class="hero-cards">
+        <div class="hero-card" onclick="goTo('algo')">
+          <span class="hero-card-icon">🔐</span>
+          <h3>Algorithmique PQC</h3>
+          <p>Sélection et analyse de HQC parmi les candidats NIST</p>
+        </div>
+        <div class="hero-card" onclick="goTo('cpa')">
+          <span class="hero-card-icon">⚡</span>
+          <h3>Sécurité & Attaques</h3>
+          <p>Attaque CPA sur AES — 200 traces suffisent</p>
+        </div>
+        <div class="hero-card" onclick="goTo('gem5')">
+          <span class="hero-card-icon">⚙️</span>
+          <h3>Simulation Gem5</h3>
+          <p>Profilage RV32IMC cycle-level — Karatsuba à 84%</p>
+        </div>
+      </div>
+
+      <!-- team & supervisors -->
+      <div class="hero-meta">
+        <div class="hero-meta-block">
+          <h4>Équipe</h4>
+          <ul>
+            <li><strong>Marianne Ninet</strong> — Communication & Algorithm Lead</li>
+            <li><strong>Xinda Guo</strong> — Hardware Lead (Carte)</li>
+            <li><strong>Noé Verdeyme</strong> — Project Manager (Software/Gem5)</li>
+            <li><strong>Quentin Tripard</strong> — Software Lead (Gem5)</li>
+          </ul>
+        </div>
+        <div class="hero-meta-block">
+          <h4>Encadrants</h4>
+          <ul>
+            <li><strong>Dr. Yehya Nasser</strong> — LPSS, MEE, Brest</li>
+            <li><strong>Magali Le Gall</strong> — LPSS, MEE, Brest</li>
+            <li>Catherine Douillard — Méthodologie</li>
+            <li>Panagiotis Papadakis — Méthodologie</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- stats bar -->
+  <div class="stats-bar">
+    <div class="stat-item">
+      <span class="stat-num">+33%</span>
+      <span class="stat-label">gain en performance (CLMUL)</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-num">200</span>
+      <span class="stat-label">traces pour casser AES-128</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-num">84%</span>
+      <span class="stat-label">du temps CPU dans Karatsuba</span>
+    </div>
+  </div>
+
+  <!-- timeline -->
+  <div class="timeline-section">
+    <div class="section-title">Chronologie du projet</div>
+    <div class="timeline">
+      <div class="tl-item done">
+        <div class="tl-date">Octobre 2025</div>
+        <div class="tl-title">Lancement & Attribution des rôles <span class="tl-badge done">✓ Fait</span></div>
+        <div class="tl-desc">Setup environnement, étude des algorithmes PQC, installation Gem5</div>
+      </div>
+      <div class="tl-item done">
+        <div class="tl-date">6 Novembre 2025</div>
+        <div class="tl-title">Choix de l'algorithme — HQC <span class="tl-badge done">✓ Fait</span></div>
+        <div class="tl-desc">Analyse comparative des 5 candidats NIST, sélection HQC pour ses opérations binaires</div>
+      </div>
+      <div class="tl-item done">
+        <div class="tl-date">20 Novembre 2025</div>
+        <div class="tl-title">HQC sur Gem5 + Profiling <span class="tl-badge done">✓ Fait</span></div>
+        <div class="tl-desc">Profiling HQC-128 sur RV32IMC — Karatsuba identifié à 84% du temps d'exécution</div>
+      </div>
+      <div class="tl-item done">
+        <div class="tl-date">6 Janvier 2026</div>
+        <div class="tl-title">CPA sur AES-128 validée <span class="tl-badge done">✓ Fait</span></div>
+        <div class="tl-desc">Clé 128 bits récupérée avec 200 traces via ChipWhisperer CW305 / PULPino</div>
+      </div>
+      <div class="tl-item wip">
+        <div class="tl-date">Février 2026</div>
+        <div class="tl-title">Instruction custom CLMUL <span class="tl-badge wip">En cours</span></div>
+        <div class="tl-desc">RTL SystemVerilog intégré dans PULPino — +33% en simulation, tests hardware en cours</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-date">Mars 2026</div>
+        <div class="tl-title">Attaque DPA sur HQC + Contre-mesures <span class="tl-badge todo">À faire</span></div>
+        <div class="tl-desc">Extension de l'attaque CPA à HQC, évaluation masquage et constant-time</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ PAGE 1 — ALGO -->
+<div class="page" id="algo">
+  <div class="page-content">
+    <div class="page-header">
+      <div class="page-num">01 — Algorithmique</div>
+      <h2>Sélection de l'algorithme PQC</h2>
+      <p>Analyse des candidats NIST post-quantiques et justification du choix de HQC pour le projet.</p>
+    </div>
+
+    <div class="content-block">
+      <h3>Contexte — Pourquoi la cryptographie post-quantique ?</h3>
+      <p>Les algorithmes asymétriques actuels (RSA, ECC) reposent sur la difficulté de factoriser de grands entiers ou de calculer des logarithmes discrets. Un ordinateur quantique suffisamment puissant, via l'algorithme de Shor, casserait ces schémas en temps polynomial. Le NIST a lancé un processus de standardisation PQC dont les premiers lauréats ont été publiés en 2024.</p>
+      <div class="img-placeholder tall">
+        <span class="ph-icon">🖼️</span>
+        <span class="ph-label">[ IMAGE — Schéma menace quantique vs cryptographie classique ]</span>
+        <span>Remplacer par votre illustration / slide</span>
+      </div>
+    </div>
+
+    <div class="content-block">
+      <h3>Comparaison des 5 candidats NIST</h3>
+      <table class="data-table">
+        <thead>
+          <tr><th>Algorithme</th><th>Type</th><th>Problème dur</th><th>Op. critiques</th><th>Taille clé</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>CRYSTALS-Kyber</td><td>KEM</td><td>Module-LWE</td><td>NTT mod 3329</td><td>~1,2 KB</td></tr>
+          <tr><td>CRYSTALS-Dilithium</td><td>Signature</td><td>Module-LWE/SIS</td><td>Fiat-Shamir</td><td>~2,5 KB</td></tr>
+          <tr><td>SPHINCS+</td><td>Signature</td><td>Fonctions de hachage</td><td>Hash chains</td><td>~32 B</td></tr>
+          <tr><td>FALCON</td><td>Signature</td><td>Réseaux (NTRU)</td><td>FFT, arith. complexe</td><td>~0,9 KB</td></tr>
+          <tr class="highlight-green"><td><strong>HQC</strong></td><td><strong>KEM</strong></td><td><strong>Codes correcteurs</strong></td><td><strong>XOR, CLMUL poly.</strong></td><td><strong>~2,2 KB</strong></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="content-block">
+      <h3>Pourquoi HQC ?</h3>
+      <div class="three-col">
+        <div class="info-card">
+          <h4>🔢 Opérations simples</h4>
+          <p>Addition = XOR, multiplication = Karatsuba sur GF(2). Idéal pour accélération matérielle ciblée.</p>
+        </div>
+        <div class="info-card green">
+          <h4>⚙️ Adapté au FPGA</h4>
+          <p>Structure quasi-cyclique adaptée aux architectures parallèles RISC-V + extensions custom.</p>
+        </div>
+        <div class="info-card">
+          <h4>🔓 Vulnérabilités documentées</h4>
+          <p>Attaques DPA/CPA publiées (Huang et al.) permettant de valider la méthodologie de sécurité.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="content-block">
+      <h3>Schéma KEM — Fonctionnement de HQC</h3>
+      <div class="img-placeholder tall">
+        <span class="ph-icon">🖼️</span>
+        <span class="ph-label">[ IMAGE — Schéma KeyGen / Encap / Decap HQC ]</span>
+        <span>Remplacer par votre diagramme ou slide</span>
+      </div>
+      <p>HQC est un Key Encapsulation Mechanism (KEM). Le déchiffrement opère dans l'anneau <code>R = F₂[X]/(Xⁿ-1)</code>. L'opération critique est la multiplication polynomiale <code>w = v ⊕ (u · y)</code> où <strong>y</strong> est la clé privée (sparse, 66 bits à 1 sur 17 669).</p>
+    </div>
+
+    <div class="content-block">
+      <h3>Paramètres HQC-128 / 192 / 256</h3>
+      <table class="data-table">
+        <thead>
+          <tr><th>Niveau</th><th>n (bits)</th><th>Clé publique</th><th>Clé privée</th><th>Ciphertext</th></tr>
+        </thead>
+        <tbody>
+          <tr class="highlight"><td>HQC-128</td><td>17 669</td><td>2 249 B</td><td>2 289 B</td><td>4 497 B</td></tr>
+          <tr><td>HQC-192</td><td>35 851</td><td>4 522 B</td><td>4 562 B</td><td>9 042 B</td></tr>
+          <tr><td>HQC-256</td><td>57 637</td><td>7 245 B</td><td>7 285 B</td><td>14 485 B</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ PAGE 2 — CPA -->
+<div class="page" id="cpa">
+  <div class="page-content">
+    <div class="page-header">
+      <div class="page-num">02 — Sécurité</div>
+      <h2>Attaque CPA sur AES-128</h2>
+      <p>Correlation Power Analysis sur l'implémentation AES de PULPino — récupération complète de la clé avec 200 traces.</p>
+    </div>
+
+    <div class="content-block">
+      <h3>Principe de la CPA</h3>
+      <p>La CPA exploite la corrélation entre la consommation physique du circuit et un modèle de fuite. On cible la sortie de la S-Box lors du premier tour AES, en supposant un modèle de Hamming Weight.</p>
+      <div class="formula-box">ρ(HW(SBOX(p[i] ⊕ K)), W[t]) → max pour K = K*</div>
+      <p>Pour chaque hypothèse de sous-clé k ∈ {0…255}, on calcule la corrélation de Pearson entre le vecteur de consommation mesuré et le modèle prédit. La valeur maximale révèle l'octet de clé correct.</p>
+    </div>
+
+    <div class="content-block">
+      <h3>Setup expérimental</h3>
+      <div class="two-col">
+        <div>
+          <div class="info-card">
+            <h4>📦 Matériel</h4>
+            <p>ChipWhisperer CW305 (Xilinx Artix-7) + CW-Lite pour l'acquisition. AES-128 sur PULPino (RV32IMC).</p>
+          </div>
+          <div class="info-card green" style="margin-top:12px;">
+            <h4>💻 Logiciel</h4>
+            <p><code>pulpino_ram.py</code> — chargement AES en RAM<br><code>CPA.py</code> — acquisition + corrélation Pearson</p>
+          </div>
+        </div>
+        <div class="img-placeholder" style="min-height:180px;">
+          <span class="ph-icon">🖼️</span>
+          <span class="ph-label">[ IMAGE — Photo du setup ChipWhisperer / CW305 ]</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="content-block">
+      <h3>Traces de puissance acquises</h3>
+      <div class="img-placeholder tall">
+        <span class="ph-icon">📈</span>
+        <span class="ph-label">[ IMAGE — Graphe des traces de puissance (200 traces superposées) ]</span>
+        <span>Exporter depuis ChipWhisperer Analyzer → matplotlib</span>
+      </div>
+    </div>
+
+    <div class="content-block">
+      <h3>Graphe de corrélation</h3>
+      <div class="img-placeholder tall">
+        <span class="ph-icon">📊</span>
+        <span class="ph-label">[ IMAGE — Corrélation de Pearson par hypothèse de sous-clé (16 octets) ]</span>
+        <span>Remplacer par votre graphe CPA.py</span>
+      </div>
+    </div>
+
+    <div class="content-block">
+      <h3>Clé récupérée</h3>
+      <table class="data-table">
+        <thead>
+          <tr><th>Octet</th><th>Valeur récupérée</th><th>Valeur réelle</th><th>Statut</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="mono">0</td><td class="mono">2b</td><td class="mono">2b</td><td>✅</td></tr>
+          <tr><td class="mono">1</td><td class="mono">7e</td><td class="mono">7e</td><td>✅</td></tr>
+          <tr><td class="mono">2</td><td class="mono">15</td><td class="mono">15</td><td>✅</td></tr>
+          <tr><td class="mono">3</td><td class="mono">16</td><td class="mono">16</td><td>✅</td></tr>
+          <tr><td class="mono">4–15</td><td class="mono">28 ae d2 a6 ab f7 15 88 09 cf 4f 3c</td><td class="mono">28 ae d2 a6 ab f7 15 88 09 cf 4f 3c</td><td>✅</td></tr>
+        </tbody>
+      </table>
+
+      <div class="result-callout">
+        <div class="result-num">200</div>
+        <div>
+          <p><strong>Clé AES-128 complète récupérée avec seulement 200 traces de puissance.</strong><br>
+          Corrélation maximale atteinte dès ~150 traces. Résultat reproductible sur la plateforme PULPino/CW305.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ PAGE 3 — HQC -->
+<div class="page" id="hqc">
+  <div class="page-content">
+    <div class="page-header">
+      <div class="page-num">03 — Algorithme</div>
+      <h2>Algorithme HQC</h2>
+      <p>Fonctionnement détaillé de HQC, opérations critiques et vulnérabilités exploitables par side-channel.</p>
+    </div>
+
+    <div class="content-block">
+      <h3>Qu'est-ce qu'un KEM ?</h3>
+      <p>Un Key Encapsulation Mechanism (KEM) est un protocole cryptographique permettant à deux parties d'établir un secret partagé sur un canal non sécurisé. HQC est candidat NIST en remplacement de RSA/DH pour les échanges de clés résistants aux attaques quantiques.</p>
+      <div class="img-placeholder short">
+        <span class="ph-icon">🖼️</span>
+        <span class="ph-label">[ IMAGE — Schéma KEM générique : Alice / Bob / canal public ]</span>
+      </div>
+    </div>
+
+    <div class="content-block">
+      <h3>Structure mathématique</h3>
+      <p>HQC opère dans l'anneau polynomial <code>R = F₂[X]/(Xⁿ-1)</code> :</p>
+      <div class="formula-box">Addition = XOR &nbsp;|&nbsp; Multiplication = rotation circulaire</div>
+      <p>La clé privée <strong>y</strong> est un vecteur de n=17 669 bits avec seulement <strong>66 bits à 1</strong> (très sparse). Cette sparsité est à la fois une force (efficacité) et une faiblesse (fuite d'information via la consommation).</p>
+    </div>
+
+    <div class="content-block">
+      <h3>KeyGen / Encap / Decap</h3>
+      <div class="img-placeholder tall">
+        <span class="ph-icon">🖼️</span>
+        <span class="ph-label">[ IMAGE — Diagramme détaillé KeyGen → Encap → Decap HQC ]</span>
+        <span>Remplacer par votre slide ou schéma du rapport</span>
+      </div>
+    </div>
+
+    <div class="content-block">
+      <h3>Opération critique — Multiplication polynomiale</h3>
+      <p>Le goulot de sécurité est la multiplication <code>w = v ⊕ (u · y)</code> lors du Decap. C'est là que la clé privée <strong>y</strong> interagit avec le ciphertext <strong>u</strong>, créant une fuite de puissance exploitable.</p>
+      <div class="info-card">
+        <h4>Technique d'attaque — Toeplitz / Ciphertexts choisis</h4>
+        <p>En choisissant des ciphertexts u avec un seul bit à 1, on isole chaque coefficient de y un par un. 10 à 45 traces suffisent pour récupérer la clé complète (Huang et al., 2022).</p>
+      </div>
+      <div class="img-placeholder short">
+        <span class="ph-icon">🖼️</span>
+        <span class="ph-label">[ IMAGE — Schéma attaque DPA chosen-ciphertext sur HQC ]</span>
+      </div>
+    </div>
+
+    <div class="content-block">
+      <h3>Conséquences pour le projet</h3>
+      <div class="two-col">
+        <div class="info-card">
+          <h4>Performance</h4>
+          <p>La multiplication polynomiale représente 84% du temps CPU → cible principale pour CLMUL.</p>
+        </div>
+        <div class="info-card green">
+          <h4>Sécurité</h4>
+          <p>La même opération fuit la clé y → cible pour l'attaque DPA en phase 2 du projet.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ PAGE 4 — OPTIM -->
+<div class="page" id="optim">
+  <div class="page-content">
+    <div class="page-header">
+      <div class="page-num">04 — Optimisation</div>
+      <h2>Instruction Custom CLMUL</h2>
+      <p>Carry-less multiplication matérielle pour accélérer HQC — +33% de gain en simulation Gem5.</p>
+    </div>
+
+    <div class="content-block">
+      <h3>Analyse du profiling — Pourquoi Karatsuba ?</h3>
+      <table class="data-table">
+        <thead>
+          <tr><th>Fonction</th><th>Instructions</th><th>% total</th></tr>
+        </thead>
+        <tbody>
+          <tr class="highlight"><td><strong>karatsuba</strong></td><td class="mono">7 324 011</td><td><strong>84.36%</strong></td></tr>
+          <tr><td>vect_set_random_fixed_weight</td><td class="mono">705 190</td><td>8.12%</td></tr>
+          <tr><td>KeccakF1600_StatePerm</td><td class="mono">413 532</td><td>4.76%</td></tr>
+          <tr><td>karatsuba_add2</td><td class="mono">124 988</td><td>1.44%</td></tr>
+        </tbody>
+      </table>
+      <div class="img-placeholder short">
+        <span class="ph-icon">📊</span>
+        <span class="ph-label">[ IMAGE — Histogramme des instructions dynamiques (sub, c.lw, and, xor…) ]</span>
+        <span>Exporter depuis votre analyse objdump / Gem5 stats</span>
+      </div>
+    </div>
+
+    <div class="content-block">
+      <h3>Principe — Carry-less multiplication dans GF(2)</h3>
+      <p>Karatsuba logiciel implémente la multiplication polynomiale avec des shifts et XOR. Chaque <code>clmul</code> hardware remplace ~900 instructions logicielles (séquences shift+xor).</p>
+      <div class="formula-box">CLMUL(a, b) = a × b mod 2 &nbsp;≡&nbsp; XOR des décalages de a pour chaque bit 1 de b</div>
+      <div class="img-placeholder short">
+        <span class="ph-icon">🖼️</span>
+        <span class="ph-label">[ IMAGE — Schéma encodage R-type RISC-V de clmul_lo / clmul_hi ]</span>
+      </div>
+    </div>
+
+    <div class="content-block">
+      <h3>Implémentation RTL SystemVerilog</h3>
+      <div class="info-card">
+        <h4>Architecture</h4>
+        <p>Deux instructions : <code>clmul_lo</code> (bits [31:0]) et <code>clmul_hi</code> (bits [63:32]) du produit 64 bits. Cache micro-architectural 64 bits pour éviter le double calcul. Karatsuba hardware sur primitives <code>clmul16</code>, intégré dans PULPino via opcode custom.</p>
+      </div>
+      <div class="img-placeholder short">
+        <span class="ph-icon">🖼️</span>
+        <span class="ph-label">[ IMAGE — Schéma RTL / pipeline PULPino avec unité CLMUL ]</span>
+      </div>
+    </div>
+
+    <div class="content-block">
+      <h3>Résultats — Avant / Après</h3>
+      <table class="data-table">
+        <thead>
+          <tr><th>Métrique</th><th>Baseline (SW)</th><th>CLMUL (HW)</th><th>Gain</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>simTicks</td><td class="mono">269.1B</td><td class="mono">181.4B</td><td>−33%</td></tr>
+          <tr><td>CPU Cycles</td><td class="mono">26.9M</td><td class="mono">18.1M</td><td>−33%</td></tr>
+          <tr><td>Instructions</td><td class="mono">40.8M</td><td class="mono">22.9M</td><td>−44%</td></tr>
+          <tr><td>simSeconds</td><td class="mono">0.269</td><td class="mono">0.181</td><td>−33%</td></tr>
+        </tbody>
+      </table>
+
+      <div class="result-callout">
+        <div class="result-num">+33%</div>
+        <div>
+          <p><strong>Gain de performance en simulation Gem5.</strong><br>
+          L'instruction custom CLMUL réduit le temps d'exécution de HQC-128 d'un tiers. Tests hardware sur CW305 en cours.</p>
+        </div>
+      </div>
+
+      <div class="img-placeholder short">
+        <span class="ph-icon">📊</span>
+        <span class="ph-label">[ IMAGE — Graphe comparatif cycles baseline vs CLMUL ]</span>
+      </div>
+    </div>
+
+    <div class="content-block">
+      <h3>Imprévu — Contrainte RAM</h3>
+      <div class="info-card" style="border-left-color: #E5A000;">
+        <h4 style="color:#8A6000;">⚠️ Problème identifié</h4>
+        <p>HQC-128 nécessite ~303 Ko de RAM (text=40 530 B, data=1 364 B, bss=808 B). PULPino dispose de ~32 Ko de RAM interne. Solution en cours : ajout RAM externe ou optimisation de l'empreinte mémoire.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ PAGE 5 — GEM5 -->
+<div class="page" id="gem5">
+  <div class="page-content">
+    <div class="page-header">
+      <div class="page-num">05 — Simulation</div>
+      <h2>Logiciel Gem5</h2>
+      <p>Simulateur cycle-level pour le profilage RISC-V RV32IMC — identification des goulots d'étranglement de HQC.</p>
+    </div>
+
+    <div class="content-block">
+      <h3>Qu'est-ce que Gem5 ?</h3>
+      <p>Gem5 est un simulateur microarchitectural open-source permettant la simulation cycle-level d'architectures CPU. Il permet d'obtenir des statistiques précises d'exécution sans nécessiter de matériel physique, idéal pour le profilage de code embarqué avant implémentation FPGA.</p>
+      <div class="two-col">
+        <div class="info-card">
+          <h4>Configuration utilisée</h4>
+          <p>ISA : RV32IMC<br>CPU : MinorCPU (pipeline 4 étages)<br>Gem5 v25.0.0.1 sur Ubuntu VM</p>
+        </div>
+        <div class="info-card green">
+          <h4>Pipeline MinorCPU</h4>
+          <p>IF → ID → EX → WB<br>Exécution in-order, CPI proche de 1<br>Adapté au profil embarqué PULPino</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="content-block">
+      <h3>Toolchain RISC-V</h3>
+      <div class="info-card">
+        <h4>Cross-compilation HQC</h4>
+        <p>Compilateur : <code>riscv32-unknown-elf-gcc-15.1.0</code> via PQClean, Makefile adapté pour RV32IMC. Fonctions d'entropie remplacées par des stubs déterministes pour la reproductibilité.</p>
+      </div>
+    </div>
+
+    <div class="content-block">
+      <h3>Comparaison RV32I vs RV32IMC</h3>
+      <table class="data-table">
+        <thead>
+          <tr><th>ISA</th><th>Cycles</th><th>CPI</th><th>Δ</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>RV32I</td><td class="mono">26 912 948</td><td class="mono">0.660210</td><td>—</td></tr>
+          <tr class="highlight"><td>RV32IMC</td><td class="mono">26 910 883</td><td class="mono">0.660159</td><td>≈ 0</td></tr>
+        </tbody>
+      </table>
+      <p>L'extension C (instructions compressées 16 bits) apporte une réduction de taille code mais un impact négligeable sur les cycles pour HQC — l'essentiel est la multiplication polynomiale, insensible aux optimisations de densité d'instructions.</p>
+    </div>
+
+    <div class="content-block">
+      <h3>Top instructions dynamiques</h3>
+      <div class="img-placeholder tall">
+        <span class="ph-icon">📊</span>
+        <span class="ph-label">[ IMAGE — Histogramme instructions dynamiques Gem5 ]</span>
+        <span>sub 16.8% · c.lw 14.8% · and 10.8% · xor 7.3% · or 6.1% · sll 6.0%</span>
+      </div>
+    </div>
+
+    <div class="content-block">
+      <h3>Screenshots Gem5</h3>
+      <div class="two-col">
+        <div class="img-placeholder" style="min-height:200px;">
+          <span class="ph-icon">🖼️</span>
+          <span class="ph-label">[ IMAGE — Output stats.txt Gem5 (simTicks, CPI…) ]</span>
+        </div>
+        <div class="img-placeholder" style="min-height:200px;">
+          <span class="ph-icon">🖼️</span>
+          <span class="ph-label">[ IMAGE — Visualisation Konata du pipeline MinorCPU ]</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="content-block">
+      <h3>Problème RAM découvert par Gem5</h3>
+      <div class="info-card" style="border-left-color: #E5A000;">
+        <h4 style="color:#8A6000;">⚠️ Découverte critique</h4>
+        <p>C'est le profiling Gem5 qui a mis en évidence l'empreinte mémoire de HQC-128 : <code>text=40 530 B</code>, <code>data=1 364 B</code>, <code>bss=808 B</code> → ~303 Ko total. Incompatible avec les 32 Ko de RAM interne de PULPino. Gem5 a permis d'identifier ce blocage avant d'engager du temps hardware.</p>
+      </div>
+    </div>
+
+    <div class="content-block">
+      <h3>Outils complémentaires</h3>
+      <div class="three-col">
+        <div class="info-card">
+          <h4>Spike + Riscof</h4>
+          <p>Validation de conformité ISA RISC-V via riscv-arch-test.</p>
+        </div>
+        <div class="info-card green">
+          <h4>Konata</h4>
+          <p>Visualisation du pipeline cycle-level pour analyser les stalls et hazards.</p>
+        </div>
+        <div class="info-card">
+          <h4>objdump + Python</h4>
+          <p>Scripts d'analyse des instructions dynamiques et patterns d'optimisation.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ FOOTER -->
+<footer>
+  <div class="footer-block">
+    <h5>Secure RISC-V</h5>
+    <ul>
+      <li>PROCOM 2025/2026</li>
+      <li>IMT Atlantique — LPSS</li>
+      <li>MEE, Brest</li>
+    </ul>
+  </div>
+
+  <div class="footer-block">
+    <h5>Équipe</h5>
+    <ul>
+      <li>Marianne Ninet</li>
+      <li>Xinda Guo</li>
+      <li>Noé Verdeyme</li>
+      <li>Quentin Tripard</li>
+    </ul>
+  </div>
+
+  <div class="footer-block">
+    <h5>Encadrants</h5>
+    <ul>
+      <li>Dr. Yehya Nasser</li>
+      <li>Magali Le Gall</li>
+      <li>LPSS — MEE Brest</li>
+    </ul>
+  </div>
+
+  <div class="footer-block">
+    <h5>Rapport technique</h5>
+    <a class="footer-pdf-link" href="rapport_secure_riscv.pdf" target="_blank">
+      <span class="pdf-icon">📄</span>
+      <span class="pdf-meta">
+        Rapport final — 6 pages
+        <span>Remplacer par le lien PDF réel</span>
+      </span>
+    </a>
+  </div>
+
+  <div class="footer-block">
+    <h5>Code source</h5>
+    <a class="footer-pdf-link" href="https://github.com/votre-org/secure-riscv" target="_blank" style="margin-top:0;">
+      <span class="pdf-icon">🐙</span>
+      <span class="pdf-meta">
+        GitHub — secure-riscv
+        <span>Repo à créer / lien à mettre à jour</span>
+      </span>
+    </a>
+  </div>
+
+  <div class="footer-copy">
+    © 2026 IMT Atlantique — LPSS. Projet académique PROCOM. Contenu à visée pédagogique.
+  </div>
+</footer>
+
+<script>
+  // tab navigation
+  const tabs = document.querySelectorAll('.nav-tabs a');
+  const pages = document.querySelectorAll('.page');
+
+  function goTo(pageId) {
+    pages.forEach(p => p.classList.remove('active'));
+    tabs.forEach(t => t.classList.remove('active'));
+    document.getElementById(pageId).classList.add('active');
+    const tab = document.querySelector(`[data-page="${pageId}"]`);
+    if (tab) tab.classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  tabs.forEach(tab => {
+    tab.addEventListener('click', e => {
+      e.preventDefault();
+      goTo(tab.dataset.page);
+    });
+  });
+</script>
+</body>
+</html>

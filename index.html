@@ -607,17 +607,14 @@
       <!-- 3 icon cards -->
       <div class="hero-cards">
         <div class="hero-card" onclick="goTo('algo')">
-          <span class="hero-card-icon">🔐</span>
           <h3>Algorithmique PQC</h3>
           <p>Sélection et analyse de HQC parmi les candidats NIST</p>
         </div>
         <div class="hero-card" onclick="goTo('cpa')">
-          <span class="hero-card-icon">⚡</span>
           <h3>Sécurité & Attaques</h3>
           <p>Attaque CPA sur AES - 200 traces suffisent</p>
         </div>
         <div class="hero-card" onclick="goTo('gem5')">
-          <span class="hero-card-icon">⚙️</span>
           <h3>Simulation Gem5</h3>
           <p>Profilage RV32IMC cycle-level - Karatsuba à 84%</p>
         </div>
@@ -690,7 +687,7 @@
       <div class="tl-item done">
         <div class="tl-date">Janvier 2026</div>
         <div class="tl-title">Instruction custom CLMUL <span class="tl-badge done">✓ Fait</span></div>
-        <div class="tl-desc">RTL SystemVerilog intégré dans PULPino : +33% en simulation, tests hardware en cours</div>
+        <div class="tl-desc">RTL SystemVerilog intégré dans PULPino : +33% en simulation, tests hardware.</div>
       </div>
       <div class="tl-item done">
         <div class="tl-date">Fevrier-Mars 2026</div>
@@ -876,7 +873,7 @@
       <h3>Qu'est-ce qu'un KEM ?</h3>
       <p>Un Key Encapsulation Mechanism (KEM) est un protocole cryptographique permettant à deux parties d'établir un secret partagé sur un canal non sécurisé. HQC est candidat NIST en remplacement de RSA/DH pour les échanges de clés résistants aux attaques quantiques.</p>
       <div class="img-placeholder short">
-        <span class="ph-icon">🖼️</span>
+        <span class="ph-icon">!</span>
         <span class="ph-label">[ IMAGE - Schéma KEM générique : Alice / Bob / canal public ]</span>
       </div>
     </div>
@@ -900,7 +897,7 @@
         <h4>Technique d'attaque - Toeplitz / Ciphertexts choisis</h4>
         <p>En choisissant des ciphertexts u avec un seul bit à 1, on isole chaque coefficient de y un par un. 10 à 45 traces suffisent pour récupérer la clé complète (Huang et al., 2022).</p>
       </div>
-      <a class="footer-pdf-link" href="attaque.pdf" target="_blank">
+      <a class="content-block" href="attaque.pdf" target="_blank">
         <span class="pdf-icon">📄</span>
         <span class="pdf-meta">
           Papier de recherche sur l'attaque DPA sur HQC
@@ -958,7 +955,7 @@
       <p>Karatsuba logiciel implémente la multiplication polynomiale avec des shifts et XOR. Chaque <code>clmul</code> hardware remplace ~900 instructions logicielles (séquences shift+xor).</p>
       <div class="formula-box">CLMUL(a, b) = a × b mod 2 &nbsp;≡&nbsp; XOR des décalages de a pour chaque bit 1 de b</div>
       <div class="img-placeholder short">
-        <span class="ph-icon">🖼️</span>
+        <span class="ph-icon">!</span>
         <span class="ph-label">[ IMAGE - Schéma encodage R-type RISC-V de clmul_lo / clmul_hi ]</span>
       </div>
     </div>
@@ -970,7 +967,7 @@
         <p>Deux instructions : <code>clmul_lo</code> (bits [31:0]) et <code>clmul_hi</code> (bits [63:32]) du produit 64 bits. Cache micro-architectural 64 bits pour éviter le double calcul. Karatsuba hardware sur primitives <code>clmul16</code>, intégré dans PULPino via opcode custom.</p>
       </div>
       <div class="img-placeholder short">
-        <span class="ph-icon">🖼️</span>
+        <span class="ph-icon">!</span>
         <span class="ph-label">[ IMAGE - Schéma RTL / pipeline PULPino avec unité CLMUL ]</span>
       </div>
     </div>
@@ -1006,7 +1003,7 @@
     <div class="content-block">
       <h3>Imprévu - Contrainte RAM</h3>
       <div class="info-card" style="border-left-color: #E5A000;">
-        <h4 style="color:#8A6000;">⚠️ Problème identifié</h4>
+        <h4 style="color:#8A6000;">Problème identifié</h4>
         <p>HQC-128 nécessite ~303 Ko de RAM (text=40 530 B, data=1 364 B, bss=808 B). PULPino dispose de ~32 Ko de RAM interne. Solution en cours : ajout RAM externe ou optimisation de l'empreinte mémoire.</p>
       </div>
     </div>
@@ -1072,11 +1069,11 @@
       <h3>Screenshots Gem5</h3>
       <div class="two-col">
         <div class="img-placeholder" style="min-height:200px;">
-          <span class="ph-icon">🖼️</span>
+          <span class="ph-icon">!</span>
           <span class="ph-label">[ IMAGE - Output stats.txt Gem5 (simTicks, CPI…) ]</span>
         </div>
         <div class="img-placeholder" style="min-height:200px;">
-          <span class="ph-icon">🖼️</span>
+          <span class="ph-icon">!</span>
           <span class="ph-label">[ IMAGE - Visualisation Konata du pipeline MinorCPU ]</span>
         </div>
       </div>
@@ -1085,7 +1082,7 @@
     <div class="content-block">
       <h3>Problème RAM découvert par Gem5</h3>
       <div class="info-card" style="border-left-color: #E5A000;">
-        <h4 style="color:#8A6000;">⚠️ Découverte critique</h4>
+        <h4 style="color:#8A6000;">Découverte critique</h4>
         <p>C'est le profiling Gem5 qui a mis en évidence l'empreinte mémoire de HQC-128 : <code>text=40 530 B</code>, <code>data=1 364 B</code>, <code>bss=808 B</code> → ~303 Ko total. Incompatible avec les 32 Ko de RAM interne de PULPino. Gem5 a permis d'identifier ce blocage avant d'engager du temps hardware.</p>
       </div>
     </div>

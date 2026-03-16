@@ -661,7 +661,28 @@
       <span class="stat-label">du temps CPU dans Karatsuba</span>
     </div>
   </div>
-
+<!-- objectifs -->
+  <div class="timeline-section" style="margin-top: 40px;">
+    <div class="section-title">Objectifs du projet</div>
+    <div class="three-col">
+      <div class="info-card">
+        <h4>Sécurité — SCA</h4>
+        <p>Comment obtenir un microcontrôleur sécurisé contre les attaques par canal auxiliaire ?</p>
+        <p style="margin-top:10px; color: var(--blue-dark); font-weight:600; font-size:13px;">Par la mise en œuvre de contre-mesures telles que le <strong>masquage (masking)
+        </strong> des données ou la <strong>dissimulation</strong> des traces de consommation.</p>
+      </div>
+      <div class="info-card green">
+        <h4>Faible consommation</h4>
+        <p>Comment s'assurer que le système fonctionne en faible consommation ?</p>
+        <p style="margin-top:10px; color: var(--green-dark); font-weight:600; font-size:13px;">En appliquant des techniques <strong>Low Power</strong> (clock gating, DVFS) et en optimisant l'architecture matérielle proposée dans le projet.</p>
+      </div>
+      <div class="info-card">
+        <h4>Performance</h4>
+        <p>Comment garantir un niveau acceptable de performance ?</p>
+        <p style="margin-top:10px; color: var(--blue-dark); font-weight:600; font-size:13px;">Via l'<strong>accélération matérielle dédiée</strong> et l'ajout d'<strong>instructions custom</strong> pour compenser la surcharge de calcul liée à la sécurité.</p>
+      </div>
+    </div>
+  </div>
   <!-- timeline -->
   <div class="timeline-section">
     <div class="section-title">Chronologie du projet</div>
@@ -815,21 +836,8 @@
     </div>
 
     <div class="content-block">
-      <h3>Traces de puissance acquises</h3>
-      <div class="img-placeholder tall">
-        <span class="ph-icon">📈</span>
-        <span class="ph-label">[ IMAGE - Graphe des traces de puissance (200 traces superposées) ]</span>
-        <span>Exporter depuis ChipWhisperer Analyzer → matplotlib</span>
-      </div>
-    </div>
-
-    <div class="content-block">
       <h3>Graphe de corrélation</h3>
-      <div class="img-placeholder tall">
-        <span class="ph-icon">📊</span>
-        <span class="ph-label">[ IMAGE - Corrélation de Pearson par hypothèse de sous-clé (16 octets) ]</span>
-        <span>Remplacer par votre graphe CPA.py</span>
-      </div>
+        <img src="aes.png" alt="Set Up" style="width:100%; border-radius:6px; margin:16px 0;" />
     </div>
 
     <div class="content-block">

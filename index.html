@@ -753,7 +753,7 @@
 
     <div class="content-block">
       <h3>Contexte - Pourquoi la cryptographie post-quantique ?</h3>
-      <p>Les algorithmes asymétriques actuels (RSA, ECC) reposent sur la difficulté de factoriser de grands entiers ou de calculer des logarithmes discrets. Un ordinateur quantique suffisamment puissant, via l'algorithme de Shor, casserait ces schémas en temps polynomial. Le NIST a lancé un processus de standardisation PQC dont les premiers lauréats ont été publiés en 2024.</p>
+      <p>Les algorithmes asymétriques actuels reposent sur la difficulté de factoriser de grands entiers ou de calculer des logarithmes discrets. Un ordinateur quantique suffisamment puissant, via l'algorithme de Shor, casserait ces schémas en temps polynomial. Le NIST a lancé un processus de standardisation PQC dont les premiers lauréats ont été publiés en 2024.</p>
     </div>
 
     <div class="content-block">
@@ -934,9 +934,13 @@
 <div class="page" id="optim">
   <div class="page-content">
     <div class="page-header">
-      <div class="page-num">04 - Optimisation</div>
-      <h2>Instruction Custom CLMUL</h2>
-      <p>Carry-less multiplication matérielle pour accélérer HQC : +33% de gain en simulation Gem5.</p>
+      <div class="page-num">04 - Optimisation - Gem5</div>
+      <h2>Logiciel Gem5</h2>
+      <p>Simulateur cycle-level pour le profilage RISC-V RV32IMC - identification des goulots d'étranglement de HQC.</p>
+    </div>
+    <div class="content-block">
+      <h3>Qu'est-ce que Gem5 ?</h3>
+      <p>Gem5 est un simulateur microarchitectural open-source permettant la simulation cycle-level d'architectures CPU. Il permet d'obtenir des statistiques précises d'exécution sans nécessiter de matériel physique, idéal pour le profilage de code embarqué avant implémentation FPGA.</p>
     </div>
 
     <div class="content-block">
@@ -989,91 +993,32 @@
         <h3>CLMUL APRÈS : </h3>
         <img src="cmul-apres.jpeg" alt="Set Up" style="width:100%; border-radius:6px; margin:16px 0;" />
     </div>
-
+    
     <div class="content-block">
-      <h3>Imprévu - Contrainte RAM</h3>
+      <h3>Problème RAM découvert par Gem5</h3>
       <div class="info-card" style="border-left-color: #E5A000;">
         <h4 style="color:#8A6000;">Problème identifié</h4>
-        <p>HQC-128 nécessite ~303 Ko de RAM (text=40 530 B, data=1 364 B, bss=808 B). PULPino dispose de ~32 Ko de RAM interne. Solution en cours : ajout RAM externe ou optimisation de l'empreinte mémoire.</p>
+        <p>C'est le profiling Gem5 qui a mis en évidence l'empreinte mémoire de HQC-128 : <code>text=40 530 B</code>, <code>data=1 364 B</code>, <code>bss=808 B</code> → ~303 Ko total. Incompatible avec les 32 Ko de RAM interne de PULPino. Gem5 a permis d'identifier ce blocage avant d'engager du temps hardware.</p>
       </div>
     </div>
   </div>
 </div>
 
-<!-- ═══════════════════════════════════════════════ PAGE 5 - GEM5 -->
+<!-- ═══════════════════════════════════════════════ PAGE 5 - AES OPTI -->
 <div class="page" id="gem5">
   <div class="page-content">
     <div class="page-header">
-      <div class="page-num">05 - Simulation</div>
-      <h2>Logiciel Gem5</h2>
-      <p>Simulateur cycle-level pour le profilage RISC-V RV32IMC - identification des goulots d'étranglement de HQC.</p>
-    </div>
-
-    <div class="content-block">
-      <h3>Qu'est-ce que Gem5 ?</h3>
-      <p>Gem5 est un simulateur microarchitectural open-source permettant la simulation cycle-level d'architectures CPU. Il permet d'obtenir des statistiques précises d'exécution sans nécessiter de matériel physique, idéal pour le profilage de code embarqué avant implémentation FPGA.</p>
-      <div class="two-col">
-        <div class="info-card">
-          <h4>Configuration utilisée</h4>
-          <p>ISA : RV32IMC<br>CPU : MinorCPU (pipeline 4 étages)<br>Gem5 v25.0.0.1 sur Ubuntu VM</p>
+      <div class="page-num">05 - Optimisation AES</div>
+      <h2>Optimisation Gem5</h2>
+      <p>Simulateur cycle-level pour le profilage AES - identification des opération les plus effectuées.</p>
+        <div class="content-block">
+            <h3>Top des 20 instruction : </h3>
+            <img src="top20instru.png" alt="Set Up" style="width:100%; border-radius:6px; margin:16px 0;" />
         </div>
-        <div class="info-card green">
-          <h4>Pipeline MinorCPU</h4>
-          <p>IF → ID → EX → WB<br>Exécution in-order, CPI proche de 1<br>Adapté au profil embarqué PULPino</p>
+        <div class="content-block">
+            <h3>AJout de l'instruction  : </h3>
+            <img src="top20instru.png" alt="Set Up" style="width:100%; border-radius:6px; margin:16px 0;" />
         </div>
-      </div>
-    </div>
-
-    <div class="content-block">
-      <h3>Toolchain RISC-V</h3>
-      <div class="info-card">
-        <h4>Cross-compilation HQC</h4>
-        <p>Compilateur : <code>riscv32-unknown-elf-gcc-15.1.0</code> via PQClean, Makefile adapté pour RV32IMC.</p>
-      </div>
-    </div>
-
-    <div class="content-block">
-      <h3>Comparaison RV32I vs RV32IMC</h3>
-      <table class="data-table">
-        <thead>
-          <tr><th>ISA</th><th>Cycles</th><th>CPI</th><th>Δ</th></tr>
-        </thead>
-        <tbody>
-          <tr><td>RV32I</td><td class="mono">26 912 948</td><td class="mono">0.660210</td><td>-</td></tr>
-          <tr class="highlight"><td>RV32IMC</td><td class="mono">26 910 883</td><td class="mono">0.660159</td><td>≈ 0</td></tr>
-        </tbody>
-      </table>
-      <p>L'extension C (instructions compressées 16 bits) apporte une réduction de taille code mais un impact négligeable sur les cycles pour HQC - l'essentiel est la multiplication polynomiale, insensible aux optimisations de densité d'instructions.</p>
-    </div>
-
-    <div class="content-block">
-      <h3>Top instructions dynamiques</h3>
-      <div class="img-placeholder tall">
-        <span class="ph-icon">📊</span>
-        <span class="ph-label">[ IMAGE - Histogramme instructions dynamiques Gem5 ]</span>
-        <span>sub 16.8% · c.lw 14.8% · and 10.8% · xor 7.3% · or 6.1% · sll 6.0%</span>
-      </div>
-    </div>
-
-    <div class="content-block">
-      <h3>Screenshots Gem5</h3>
-      <div class="two-col">
-        <div class="img-placeholder" style="min-height:200px;">
-          <span class="ph-icon">!</span>
-          <span class="ph-label">[ IMAGE - Output stats.txt Gem5 (simTicks, CPI…) ]</span>
-        </div>
-        <div class="img-placeholder" style="min-height:200px;">
-          <span class="ph-icon">!</span>
-          <span class="ph-label">[ IMAGE - Visualisation Konata du pipeline MinorCPU ]</span>
-        </div>
-      </div>
-    </div>
-
-    <div class="content-block">
-      <h3>Problème RAM découvert par Gem5</h3>
-      <div class="info-card" style="border-left-color: #E5A000;">
-        <h4 style="color:#8A6000;">Découverte critique</h4>
-        <p>C'est le profiling Gem5 qui a mis en évidence l'empreinte mémoire de HQC-128 : <code>text=40 530 B</code>, <code>data=1 364 B</code>, <code>bss=808 B</code> → ~303 Ko total. Incompatible avec les 32 Ko de RAM interne de PULPino. Gem5 a permis d'identifier ce blocage avant d'engager du temps hardware.</p>
       </div>
     </div>
   </div>
@@ -1121,7 +1066,7 @@
 
   <div class="footer-block">
     <h5>Code source</h5>
-    <a class="footer-pdf-link" href="https://github.com/votre-org/secure-riscv" target="_blank" style="margin-top:0;">
+    <a class="footer-pdf-link" href="https://github.com/IMT-Atlantique-LPSS/PRACOM_STUDENT/" target="_blank" style="margin-top:0;">
       <span class="pdf-icon">🐙</span>
       <span class="pdf-meta">
         GitHub - secure-riscv

@@ -719,9 +719,15 @@
       </div>    
       <div class="tl-item done">
         <div class="tl-date">Fevrier-Mars 2026</div>
-        <div class="tl-title">Retour sur l'algorithme AES <span class="tl-badge done">✓ Fait</span></div>
-        <div class="tl-desc">Optimisation des opérations AES sur PULPino</div>
+        <div class="tl-title">Optimisation AES <span class="tl-badge done">✓ Fait</span></div>
+        <div class="tl-desc">Ajout en hardware des opérations subbytes et mixcolumns</div>
       </div>
+      <div class="tl-item done">
+        <div class="tl-date">Mars 2026</div>
+        <div class="tl-title">Securisation AES <span class="tl-badge done">✓ Fait</span></div>
+        <div class="tl-desc">Masquage du subbytes en hardware</div>
+      </div>
+
       <div class="tl-item done">
         <div class="tl-date">Mars 2026</div>
         <div class="tl-title">Ecriture des livrables <span class="tl-badge done">✓ Fait</span></div>
@@ -941,15 +947,11 @@
         </thead>
         <tbody>
           <tr class="highlight"><td><strong>karatsuba</strong></td><td class="mono">7 324 011</td><td><strong>84.36%</strong></td></tr>
-          <tr><td>vect_set_random_fixed_weight</td><td class="mono">705 190</td><td>8.12%</td></tr>
-          <tr><td>KeccakF1600_StatePerm</td><td class="mono">413 532</td><td>4.76%</td></tr>
-          <tr><td>karatsuba_add2</td><td class="mono">124 988</td><td>1.44%</td></tr>
         </tbody>
       </table>
-      <div class="img-placeholder short">
-        <span class="ph-icon">📊</span>
-        <span class="ph-label">[ IMAGE - Histogramme des instructions dynamiques (sub, c.lw, and, xor…) ]</span>
-        <span>Exporter depuis votre analyse objdump / Gem5 stats</span>
+      <div class="content-block">
+        <h3>Karatsuba</h3>
+          <img src="gem5.png" alt="Set Up" style="width:100%; border-radius:6px; margin:16px 0;" />
       </div>
     </div>
 
@@ -957,22 +959,6 @@
       <h3>Principe - Carry-less multiplication dans GF(2)</h3>
       <p>Karatsuba logiciel implémente la multiplication polynomiale avec des shifts et XOR. Chaque <code>clmul</code> hardware remplace ~900 instructions logicielles (séquences shift+xor).</p>
       <div class="formula-box">CLMUL(a, b) = a × b mod 2 &nbsp;≡&nbsp; XOR des décalages de a pour chaque bit 1 de b</div>
-      <div class="img-placeholder short">
-        <span class="ph-icon">!</span>
-        <span class="ph-label">[ IMAGE - Schéma encodage R-type RISC-V de clmul_lo / clmul_hi ]</span>
-      </div>
-    </div>
-
-    <div class="content-block">
-      <h3>Implémentation RTL SystemVerilog</h3>
-      <div class="info-card">
-        <h4>Architecture</h4>
-        <p>Deux instructions : <code>clmul_lo</code> (bits [31:0]) et <code>clmul_hi</code> (bits [63:32]) du produit 64 bits. Cache micro-architectural 64 bits pour éviter le double calcul. Karatsuba hardware sur primitives <code>clmul16</code>, intégré dans PULPino via opcode custom.</p>
-      </div>
-      <div class="img-placeholder short">
-        <span class="ph-icon">!</span>
-        <span class="ph-label">[ IMAGE - Schéma RTL / pipeline PULPino avec unité CLMUL ]</span>
-      </div>
     </div>
 
     <div class="content-block">
@@ -993,14 +979,15 @@
         <div class="result-num">+33%</div>
         <div>
           <p><strong>Gain de performance en simulation Gem5.</strong><br>
-          L'instruction custom CLMUL réduit le temps d'exécution de HQC-128 d'un tiers. Tests hardware sur CW305 en cours.</p>
+          L'instruction custom CLMUL réduit le temps d'exécution de HQC-128 d'un tiers.</p>
         </div>
       </div>
-
-      <div class="img-placeholder short">
-        <span class="ph-icon">📊</span>
-        <span class="ph-label">[ IMAGE - Graphe comparatif cycles baseline vs CLMUL ]</span>
-      </div>
+    </div>
+    <div class="content-block">
+        <h3>CLMUL AVANT : </h3>
+        <img src="cmul-avant.jpeg" alt="Set Up" style="width:100%; border-radius:6px; margin:16px 0;" />
+        <h3>CLMUL APRÈS : </h3>
+        <img src="cmul-apres.jpeg" alt="Set Up" style="width:100%; border-radius:6px; margin:16px 0;" />
     </div>
 
     <div class="content-block">

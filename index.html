@@ -233,7 +233,7 @@
     /* ─── STATS BAR ───────────────────────────────────────── */
     .stats-bar {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(4, 1fr);
       background: var(--white);
       border-bottom: 1px solid var(--gray-100);
     }
@@ -617,8 +617,8 @@
           <p>Attaque CPA sur AES - 200 traces suffisent</p>
         </div>
         <div class="hero-card" onclick="goTo('gem5')">
-          <h3>Simulation Gem5</h3>
-          <p>Profilage RV32IMC cycle-level - Karatsuba à 84%</p>
+          <h3>Optimisation & Sécurité AES</h3>
+          <p>Instructions SubBytes & MixColumns en hardware + masquage contre CPA</p>
         </div>
       </div>
 
@@ -659,6 +659,10 @@
     <div class="stat-item">
       <span class="stat-num">84%</span>
       <span class="stat-label">du temps CPU dans Karatsuba</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-num">−49%</span>
+      <span class="stat-label">cycles AES avec SubBytes+MixColumns HW</span>
     </div>
   </div>
 <!-- objectifs -->
@@ -733,9 +737,9 @@
         <div class="tl-title">Ecriture des livrables <span class="tl-badge done">✓ Fait</span></div>
         <div class="tl-desc">Rédaction du rapport final & du poster.</div>
       </div> 
-      <div class="tl-item todo">
+      <div class="tl-item wip">
         <div class="tl-date">20 Mars 2026</div>
-        <div class="tl-title">Présentation finale<span class="tl-badge todo"></span>En cours</div>
+        <div class="tl-title">Présentation finale <span class="tl-badge wip">En cours</span></div>
         <div class="tl-desc">Fin de projet.</div>
       </div>
     </div>
@@ -907,10 +911,14 @@
         <h4>Technique d'attaque - Toeplitz / Ciphertexts choisis</h4>
         <p>En choisissant des ciphertexts u avec un seul bit à 1, on isole chaque coefficient de y un par un. 10 à 45 traces suffisent pour récupérer la clé complète (Huang et al., 2022).</p>
       </div>
-      <iframe 
-        src="attaque.pdf" 
+      <iframe
+        src="attaque.pdf"
         style="width:100%; height:600px; border-radius:8px; border:1px solid var(--gray-300); background:var(--blue-light);"
         title="Papier attaque DPA sur HQC">
+        <div class="info-card" style="margin:0;">
+          <h4>PDF non chargé</h4>
+          <p>Le navigateur ne supporte pas l'affichage inline. <a href="attaque.pdf" target="_blank" style="color:var(--blue);">Ouvrir le papier (PDF)</a></p>
+        </div>
       </iframe>
     </div>
 
@@ -1069,7 +1077,7 @@
       <img src="4.png" alt="Performance of AES Implementations" style="width:100%; border-radius:6px; margin:16px 0;" />
 
       <div class="result-callout">
-        <div class="result-num">−48%</div>
+        <div class="result-num">−49%</div>
         <div>
           <p><strong>Réduction du nombre de cycles AES avec SubBytes + MixColumns en hardware.</strong><br>
           Le masquage de SubBytes coûte ~5% de cycles supplémentaires : un compromis performance/sécurité favorable.</p>
@@ -1126,7 +1134,6 @@
       <span class="pdf-icon">🐙</span>
       <span class="pdf-meta">
         GitHub - secure-riscv
-        <span>Repo à créer / lien à mettre à jour</span>
       </span>
     </a>
   </div>

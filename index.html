@@ -666,7 +666,7 @@
     <div class="section-title">Objectifs du projet</div>
     <div class="three-col">
       <div class="info-card">
-        <h4>Sécurité — SCA</h4>
+        <h4>Sécurité : SCA</h4>
         <p>Comment obtenir un microcontrôleur sécurisé contre les attaques par canal auxiliaire ?</p>
         <p style="margin-top:10px; color: var(--blue-dark); font-weight:600; font-size:13px;">Par la mise en œuvre de contre-mesures telles que le <strong>masquage (masking)
         </strong> des données ou la <strong>dissimulation</strong> des traces de consommation.</p>
@@ -1015,14 +1015,14 @@
 
     <!-- INTRO : profiling -->
     <div class="content-block">
-      <h3>Étape 0 — Profilage AES sur Gem5</h3>
-      <p>Le profil dynamique d'AES révèle que les instructions les plus exécutées sont <code>sub</code>, <code>and</code>, <code>xor</code> — ce sont les briques de base de SubBytes et MixColumns. Cela justifie l'accélération ciblée de ces deux opérations en hardware.</p>
+      <h3>Étape 0 : Profilage AES sur Gem5</h3>
+      <p>Le profil dynamique d'AES révèle que les instructions les plus exécutées sont <code>sub</code>, <code>and</code>, <code>xor</code> : ce sont les briques de base de SubBytes et MixColumns. Cela justifie l'accélération ciblée de ces deux opérations en hardware.</p>
       <img src="top20instru.png" alt="Top 20 instructions AES" style="width:100%; border-radius:6px; margin:16px 0;" />
     </div>
 
     <!-- PARTIE 1 : optimisation HW -->
     <div class="content-block">
-      <h3>Partie 1 — Instructions hardware : SubBytes & MixColumns</h3>
+      <h3>Partie 1 : Instructions hardware : SubBytes & MixColumns</h3>
       <p>Nous avons ajouté deux instructions custom dans PULPino pour accélérer les deux opérations les plus coûteuses de chaque tour AES :</p>
       <div class="two-col" style="margin: 16px 0;">
         <div class="info-card">
@@ -1039,17 +1039,17 @@
 
     <!-- PARTIE 2 : sécurité -->
     <div class="content-block">
-      <h3>Partie 2 — Sécurisation : Masquage de SubBytes</h3>
+      <h3>Partie 2 : Sécurisation : Masquage de SubBytes</h3>
       <p>L'optimisation hardware expose AES aux attaques par canal auxiliaire. Sans contre-mesure, une CPA sur la S-Box suffit à retrouver la clé. Nous avons appliqué un <strong>masquage de SubBytes</strong> : chaque valeur est combinée avec un masque aléatoire avant d'entrer dans la S-Box, rendant la fuite de puissance décorrélée de la clé.</p>
 
       <div class="two-col" style="margin: 16px 0 24px;">
         <div>
-          <p style="font-weight:600; color:var(--gray-700); margin-bottom:8px;">Sans masquage — CPA réussit</p>
+          <p style="font-weight:600; color:var(--gray-700); margin-bottom:8px;">Sans masquage : CPA réussit</p>
           <img src="2.png" alt="AES sans masquage - attaque CPA réussie" style="width:100%; border-radius:6px;" />
           <p style="font-size:12px; color:var(--gray-500); margin-top:6px;">La fuite de puissance est directement corrélée à la clé → la CPA récupère la clé complète.</p>
         </div>
         <div>
-          <p style="font-weight:600; color:var(--gray-700); margin-bottom:8px;">Avec masquage SubBytes — CPA échoue</p>
+          <p style="font-weight:600; color:var(--gray-700); margin-bottom:8px;">Avec masquage SubBytes : CPA échoue</p>
           <img src="3.png" alt="AES avec masquage - CPA brouillée" style="width:100%; border-radius:6px;" />
           <p style="font-size:12px; color:var(--gray-500); margin-top:6px;">Le masque aléatoire brouille la corrélation → la CPA ne distingue plus la bonne hypothèse de clé.</p>
         </div>
@@ -1058,15 +1058,15 @@
 
     <!-- RÉSULTATS : graphe bilan -->
     <div class="content-block">
-      <h3>Bilan — Performance vs Sécurité</h3>
-      <p>Le graphe suivant résume l'évolution du nombre de cycles selon les optimisations appliquées. L'ajout du masquage entraîne une légère perte de performance par rapport à l'optimisation pure, mais elle est marginale au regard du gain en sécurité.</p>
+      <h3>Bilan : Performance vs Sécurité</h3>
+      <p>Le graphe suivant résume l'évolution du nombre de cycles selon les optimisations appliquées. L'ajout du masquage entraîne une légère perte de performance par rapport à l'optimisation pure, mais elle est minime au regard du gain en sécurité.</p>
       <img src="4.png" alt="Performance of AES Implementations" style="width:100%; border-radius:6px; margin:16px 0;" />
 
       <div class="result-callout">
         <div class="result-num">−48%</div>
         <div>
           <p><strong>Réduction du nombre de cycles AES avec SubBytes + MixColumns en hardware.</strong><br>
-          Le masquage de SubBytes coûte ~5% de cycles supplémentaires — un compromis performance/sécurité très favorable.</p>
+          Le masquage de SubBytes coûte ~5% de cycles supplémentaires : un compromis performance/sécurité favorable.</p>
         </div>
       </div>
     </div>
